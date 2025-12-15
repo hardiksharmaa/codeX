@@ -73,7 +73,7 @@ const courses = [
 ];
 
 export function Header() {
-  const {user} =useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
   return (
     <div className='p-4 max-w-7xl flex justify-between items-center w-full'>
       <div className='flex gap-2 items-center'>
@@ -114,15 +114,20 @@ export function Header() {
         </NavigationMenuItem>
       </NavigationMenuList>
       </NavigationMenu>
-      {!user? 
-      <Link href={'/sign-in'}>
-      <Button className='font-game text-2xl cursor-pointer' variant={'pixel'}>Signup</Button>
-      </Link>: 
-      <div className='flex gap-4 items-center'>
-        <Button className='font-game text-2xl cursor-pointer' variant={'pixel'}>Dashboard</Button>
-        <UserButton/>
-      </div>
-      }
+      {!isLoaded ? null : !isSignedIn ? (
+        <Link href="/sign-in">
+          <Button className="font-game text-2xl cursor-pointer" variant="pixel">
+            Sign up
+          </Button>
+        </Link>
+        ) : (
+        <div className="flex gap-4 items-center">
+          <Button className="font-game text-2xl cursor-pointer" variant="pixel">
+            Dashboard
+          </Button>
+          <UserButton />
+        </div>
+        )}
      </div>
   )
 }
