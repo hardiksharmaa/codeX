@@ -82,7 +82,7 @@ export function Header() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Courses</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className='grid md:grid-cols-2 gap-2 sm:w-[400px] md:w-[500] lg:w-[600]'>
+            <ul className='grid md:grid-cols-2 gap-2 sm:w-[400px] md:w-[500px] lg:w-[600px]'>
               {
                 courses.map((course,index)=>(
                   <div key={index} className='p-2 hover:bg-accent rounded-xl cursor-pointer'>
@@ -95,17 +95,17 @@ export function Header() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink>
+          <NavigationMenuLink asChild>
             <Link href={'/projects'}>Projects</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink>
+          <NavigationMenuLink asChild>
             <Link href={'/pricing'}>Pricing</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink>
+          <NavigationMenuLink asChild>
             <Link href={'/contact-us'}>Contact Us</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
