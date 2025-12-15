@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 export function Hero() {
   return (
     <div className='w-full relative h-screen overflow-hidden'> 
@@ -14,7 +15,9 @@ export function Hero() {
         }}
         >Coding Adventure</h2>
         <h2 className='mt-1 font-game text-3xl'>Beginner friendly coding courses and projects</h2>
+        <Link href={'/sign-in'}>
         <Button className='font-game text-3xl p-5 mt-7 cursor-pointer' variant={'pixel'}>Get Started</Button>
+        </Link>
       </div>
     </div>
   )
