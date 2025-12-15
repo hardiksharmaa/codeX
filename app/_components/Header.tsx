@@ -85,7 +85,7 @@ export function Header() {
             <ul className='grid md:grid-cols-2 gap-2 sm:w-[400px] md:w-[500px] lg:w-[600px]'>
               {
                 courses.map((course,index)=>(
-                  <div key={index} className='p-2 hover:bg-accent rounded-xl cursor-pointer'>
+                  <div key={course.id} className='p-2 hover:bg-accent rounded-xl cursor-pointer'>
                     <h2 className='font-medium'>{course.name}</h2>
                     <p className='text-sm text-gray-400'>{course.desc}</p>
                   </div>
@@ -111,7 +111,7 @@ export function Header() {
         </NavigationMenuItem>
       </NavigationMenuList>
       </NavigationMenu>
-      <Button className='font-game text-2xl' variant={'pixel'}>Signup</Button>
+      <Button className='font-game text-2xl cursor-pointer' variant={'pixel'}>Signup</Button>
      </div>
   )
 }
