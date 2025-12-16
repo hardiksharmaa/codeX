@@ -122,9 +122,11 @@ export function Header() {
         </Link>
         ) : (
         <div className="flex gap-4 items-center">
+          <Link href="/dashboard">
           <Button className="font-game text-2xl cursor-pointer" variant="pixel">
             Dashboard
           </Button>
+          </Link>
           <UserButton />
         </div>
         )}
