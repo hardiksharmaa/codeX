@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import {ChartNoAxesColumnIncreasingIcon } from "lucide-react";
+import Link from "next/link";
 
-type Course = {
+export type Course = {
   id: number;
   courseId: number;
   title: string;
@@ -12,7 +13,25 @@ type Course = {
   level: string;
   bannerImage: string;
   tag: string;
+  chapters?:Chapter[];
 };
+
+type Chapter={
+  chapterId: number;
+  courseId: number;
+  desc: number;
+  name: string;
+  id: number;
+  exercises: exercise[];
+}
+
+type exercise={
+  name: string;
+  slug:string;
+  xp:number;
+  difficulty:string;
+}
+
 
 function CourseList() {
   const [courseList, setCourseList] = useState<Course[]>([]);
@@ -39,6 +58,7 @@ function CourseList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
       {courseList.map((course) => (
+        <Link key={course.id} href={'/courses/'+course?.courseId}>
         <div key={course.id} className="bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 rounded-xl p-3 cursor-pointer"
         >
         <div className="relative w-full h-[150px] overflow-hidden rounded-lg">
@@ -58,6 +78,7 @@ function CourseList() {
           {course.level} 
         </h2>
       </div>
+      </Link>
       ))}
     </div>
   );

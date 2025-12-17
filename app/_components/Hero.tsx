@@ -1,24 +1,62 @@
-import React from 'react'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+"use client";
+import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
+
 export function Hero() {
+  const { isSignedIn, isLoaded } = useUser();
+
   return (
-    <div className='w-full relative h-screen overflow-hidden'> 
-      <Image src={'/hero.gif'} alt='hero' fill priority
-      className='object-cover'/>
-      <div className='absolute w-full flex flex-col items-center mt-24' >
-        <h2 className='font-bold text-7xl font-game'> Start Your</h2>
-        <h2 className='font-bold text-8xl font-game text-yellow-400'
-        style={{
-          textShadow:"2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000,-2px 2px 0 #000"
-        }}
-        >Coding Adventure</h2>
-        <h2 className='mt-1 font-game text-3xl'>Beginner friendly coding courses and projects</h2>
-        <Link href={'/sign-in'}>
-        <Button className='font-game text-3xl p-5 mt-7 cursor-pointer' variant={'pixel'}>Get Started</Button>
-        </Link>
+    <div className="w-full relative h-screen overflow-hidden">
+      <Image
+        src={"/hero.gif"}
+        alt="hero"
+        fill
+        priority
+        className="object-cover"
+      />
+
+      <div className="absolute w-full flex flex-col items-center mt-24">
+        <h2 className="font-bold text-7xl font-game">Start Your</h2>
+
+        <h2
+          className="font-bold text-8xl font-game text-yellow-400"
+          style={{
+            textShadow:
+              "2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000",
+          }}
+        >
+          Coding Adventure
+        </h2>
+
+        <h2 className="mt-1 font-game text-3xl">
+          Beginner friendly coding courses and projects
+        </h2>
+
+        {isLoaded && (
+          isSignedIn ? (
+            <Link href="/courses">
+              <Button
+                className="font-game text-3xl p-4 mt-7 cursor-pointer"
+                variant="pixel"
+              >
+                View Courses
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/sign-in">
+              <Button
+                className="font-game text-3xl p-5 mt-7 cursor-pointer"
+                variant="pixel"
+              >
+                Get Started
+              </Button>
+            </Link>
+          )
+        )}
       </div>
     </div>
-  )
+  );
 }
