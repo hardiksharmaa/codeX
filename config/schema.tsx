@@ -1,5 +1,5 @@
 import { id } from "date-fns/locale";
-import { pgTable, integer, varchar, json, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, integer, varchar, json, uniqueIndex, timestamp ,unique, index} from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -35,5 +35,21 @@ export const CourseChaptersTable = pgTable(
       table.courseId,
       table.chapterId
     ),
+  })
+);
+
+export const EnrolledCoursesTable = pgTable(
+  "enrollCourse",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    courseId: integer().notNull(),
+    userId: varchar({ length: 255 }).notNull(),
+    enrolledDate: timestamp().defaultNow().notNull(),
+    xpEarned: integer().default(0).notNull(),
+  },
+  (table) => ({
+    uniqueUserCourse: unique().on(table.userId, table.courseId),
+    userIdx: index().on(table.userId),
+    courseIdx: index().on(table.courseId),
   })
 );

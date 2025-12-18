@@ -1,6 +1,7 @@
 import {db} from "@/config/db"
 import { CourseChaptersTable } from "@/config/schema"
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@clerk/nextjs/server";
 
 const DATA=
 [
@@ -162,16 +163,41 @@ const DATA=
   }
 ]
 
-export async function GET(req: NextRequest) {
-    DATA.forEach(async (item) => {
-        await db.insert(CourseChaptersTable).values({
-            courseId: 2,
+export async function POST(req: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    await Promise.all(
+      DATA.map((item) =>
+        db
+          .insert(CourseChaptersTable)
+          .values({
+            courseId: 2, 
             desc: item?.desc,
             exercises: item.exercises,
             name: item?.name,
             chapterId: item?.id
-        })
-    })
-    return NextResponse.json('Success')
-}
+          })
+          .onConflictDoNothing()   
+      )
+    );
 
+    return NextResponse.json({
+      success: true,
+      message: "Chapters inserted successfully",
+    });
+  } catch (error) {
+    console.error("Error inserting chapters:", error);
+
+    return NextResponse.json(
+      { error: "Failed to insert chapters" },
+      { status: 500 }
+    );
+  }
+}
