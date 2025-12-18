@@ -53,3 +53,11 @@ export const EnrolledCoursesTable = pgTable(
     courseIdx: index().on(table.courseId),
   })
 );
+
+export const CompletedExerciseTable = pgTable('completedExercise',{
+  id:integer().primaryKey().generatedAlwaysAsIdentity(),
+  courseId:integer().notNull(),
+  chapterId:integer().notNull(),
+  exerciseId:integer().notNull(),
+  userId:varchar({length:255}).notNull(),
+})

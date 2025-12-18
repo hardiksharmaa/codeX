@@ -1,11 +1,12 @@
 import { db } from "@/config/db";
 import {
+  CompletedExerciseTable,
   CourseChaptersTable,
   CourseTable,
   EnrolledCoursesTable,
 } from "@/config/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq, asc, and } from "drizzle-orm";
+import { eq, asc, and, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -14,13 +15,11 @@ export async function GET(req: NextRequest) {
     const courseIdParam = searchParams.get("courseId");
     const user = await currentUser();
 
-    // ✅ CASE 1: No courseId → return ALL courses
     if (!courseIdParam) {
       const courses = await db.select().from(CourseTable);
       return NextResponse.json(courses);
     }
 
-    // ✅ CASE 2: courseId present → course detail
     const courseId = Number(courseIdParam);
     if (Number.isNaN(courseId)) {
       return NextResponse.json(
@@ -49,6 +48,7 @@ export async function GET(req: NextRequest) {
 
     let isEnrolledCourse = false;
     let enrolledCourse: any[] = [];
+    let completedExercises: any[] = [];
 
     if (user) {
       enrolledCourse = await db
@@ -62,13 +62,25 @@ export async function GET(req: NextRequest) {
         );
 
       isEnrolledCourse = enrolledCourse.length > 0;
-    }
 
+      completedExercises = await db
+        .select()
+        .from(CompletedExerciseTable)
+        .where(
+          and(
+            eq(CompletedExerciseTable.courseId, courseId),
+            eq(CompletedExerciseTable.userId, user.id)
+          )
+        ).orderBy(desc(CompletedExerciseTable?.courseId),
+          desc(CompletedExerciseTable?.exerciseId)
+        )
+      }
     return NextResponse.json({
       ...result[0],
       chapters: chapterResult,
       userEnrolled: isEnrolledCourse,
       courseEnrolledInfo: enrolledCourse[0] ?? null,
+      completedExercises: completedExercises,
     });
 
   } catch (error) {
