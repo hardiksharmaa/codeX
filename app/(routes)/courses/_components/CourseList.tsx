@@ -16,11 +16,18 @@ export type Course = {
   chapters?:Chapter[];
   userEnrolled?:boolean;
   courseEnrolledInfo?:CourseEnrolledInfo;
+  completedExercises?:CompletedExercises[];
 };
+
+type CompletedExercises={
+  chapterId:number,
+  courseId:number,
+  exerciseId: number,
+}
 
 type CourseEnrolledInfo = {
   xpEarned: number,
-  enrollledDate:any,
+  enrolledDate:any,
 }
 
 type Chapter={

@@ -33,7 +33,7 @@ function CourseStatus({courseDetail}:Props) {
     })
   }
   const UpdateProgress=(currentValue:number,totalValue:number)=>{
-    if(currentValue && totalValue){
+    if(totalValue > 0){
       return (currentValue/totalValue)*100;
     }
     return 0
@@ -44,8 +44,9 @@ function CourseStatus({courseDetail}:Props) {
         <div className='flex items-center gap-5 mt-4'>
             <Image src={'/book.png'} alt='book' width={50} height={50}/>
             <div className='w-full'>
-              <h2 className='flex justify-between text-2xl'>Exercises <span className='text-zinc-400'>7/{counts?.totalExc}</span></h2>
-              <Progress value={28} className='mt-2'/>
+              <h2 className='flex justify-between text-2xl'>Exercises <span className='text-zinc-400'>{courseDetail?.completedExercises?.length}/{counts?.totalExc}</span></h2>
+              {/* @ts-ignore */}
+              <Progress value={UpdateProgress(courseDetail?.completedExercises?.length??0,counts?.totalExc)} className='mt-2'/>
 
             </div>
         </div>
