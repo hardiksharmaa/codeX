@@ -13,13 +13,40 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import Link from 'next/link'
 
-type props={
-    loading:boolean,
-    courseDetail:Course | undefined
+type props = {
+  loading: boolean,
+  courseDetail: Course | undefined
 }
 
-function CourseChapters({ loading, courseDetail }:props) {
+function CourseChapters({ loading, courseDetail }: props) {
+  if (loading || !courseDetail) {
+    return (
+    <div className="p-5 border-4 rounded-2xl space-y-4">
+      {[1, 2, 3].map((_, chapterIdx) => (
+          <div key={chapterIdx} className="space-y-3">
+            <Skeleton className="h-12 w-full rounded-xl" />
+
+            <div className="bg-zinc-800 p-3 rounded-2xl space-y-4">
+              {[1, 2, 3].map((_, excIdx) => (
+                <div
+                  key={excIdx}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-10">
+                    <Skeleton className="h-6 w-32" />
+                    <Skeleton className="h-6 w-64" />
+                  </div>
+                  <Skeleton className="h-8 w-20 rounded-lg" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   const getGlobalExerciseIndex = (
     chapterIndex: number,
@@ -27,15 +54,13 @@ function CourseChapters({ loading, courseDetail }:props) {
     chapters: any[]
   ) => {
     let count = 0;
-
     for (let i = 0; i < chapterIndex; i++) {
       count += chapters[i].exercises.length;
     }
-
     return count + exerciseIndex;
   };
 
-    const EnableExercise = (
+  const EnableExercise = (
     chapterIndex: number,
     exerciseIndex: number
   ) => {
@@ -62,72 +87,91 @@ function CourseChapters({ loading, courseDetail }:props) {
       chapters
     );
 
-    return currentGlobalIndex === lastGlobalIndex + 2;
+    return currentGlobalIndex === lastGlobalIndex + 1;
   };
 
-  const isExerciseCompleted=(chapterId:number, exerciseId:number)=>{
+  const isExerciseCompleted = (chapterId: number, exerciseId: number) => {
     const completedChapters = courseDetail?.completedExercises;
-    const completedChapter=completedChapters?.find((item=>item.chapterId===chapterId && item.exerciseId===exerciseId))
-    if(completedChapter) return true;
-    return false;
-  }
+    return completedChapters?.some(
+      item => item.chapterId === chapterId && item.exerciseId === exerciseId
+    ) ?? false;
+  };
+
   return (
     <div>
-        <div className='p-5 border-4 rounded-2xl'>
-          {
-            courseDetail?.chapters?.map((chapter,index)=>(
-              <Accordion type="single" collapsible key={index}>
-              <AccordionItem value="item-1">
-                  <AccordionTrigger className='p-3 hover:bg-zinc-800 font-game text-3xl'>
-                  <div className='flex gap-8'>
-                    <h2 className='h-7 w-7'>{index+1}</h2>
-                    <h2>{chapter.name}</h2>
-                  </div>
-                  </AccordionTrigger>
-                <AccordionContent>
-                  <div className='p-3 bg-zinc-800 rounded-2xl'>
-                    {chapter?.exercises.map((exc,indexExc)=>(
-                      <div key={indexExc} className='flex items-center justify-between mb-5'>
-                        <div className='flex items-center gap-10'>
-                          <h2 className='text-2xl font-game text-yellow-500'>Excercise {index*chapter?.exercises
-                          .length+indexExc+1}</h2>
-                          <h2 className='text-2xl font-game'>{exc.name}</h2>
-                        </div>
-                        {isExerciseCompleted(chapter.chapterId, indexExc + 1) ? (
-                          <Button
-                            variant="pixel"
-                            className="px-2 font-game text-xl bg-green-600 cursor-default"
+      <div className='p-5 border-4 rounded-2xl'>
+        {courseDetail?.chapters?.map((chapter, index) => (
+          <Accordion type="single" collapsible key={index}>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className='p-3 hover:bg-zinc-800 font-game text-3xl'>
+                <div className='flex gap-8'>
+                  <h2 className='h-7 w-7'>{index + 1}</h2>
+                  <h2>{chapter.name}</h2>
+                </div>
+              </AccordionTrigger>
+
+              <AccordionContent>
+                <div className='p-3 bg-zinc-800 rounded-2xl'>
+                  {chapter.exercises.map((exc, indexExc) => (
+                    <div
+                      key={indexExc}
+                      className='flex items-center justify-between mb-5'
+                    >
+                      <div className='flex items-center gap-10'>
+                        <h2 className='text-2xl font-game text-yellow-500'>
+                          Excercise {index * chapter.exercises.length + indexExc + 1}
+                        </h2>
+
+                        {(EnableExercise(index, indexExc) ||
+                          isExerciseCompleted(chapter.chapterId, indexExc + 1)) ? (
+                          <Link
+                            href={'/courses/'+courseDetail?.courseId+'/'+chapter?.chapterId+'/'+exc?.slug}
                           >
-                            Done
-                          </Button>
-                        ) : EnableExercise(index, indexExc) ? (
+                            <h2 className='text-2xl font-game hover:underline cursor-pointer'>
+                              {exc.name}
+                            </h2>
+                          </Link>
+                        ) : (
+                          <h2 className='text-2xl font-game text-zinc-400'>
+                            {exc.name}
+                          </h2>
+                        )}
+                      </div>
+
+                      {isExerciseCompleted(chapter.chapterId, indexExc + 1) ? (
+                        <Button
+                          variant="pixel"
+                          className="px-2 font-game text-xl bg-green-600 cursor-default"
+                        >
+                          Done
+                        </Button>
+                      ) : EnableExercise(index, indexExc) ? (
                           <Button variant="destructive" className="px-2 font-game text-xl">
                             {exc.xp} xp
                           </Button>
-                        ) : (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="pixelDisabled"
-                                className="px-2 font-game cursor-not-allowed"
-                              >
-                                🔒 xp
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Complete previous exercise</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ))
-          }
-        </div>
+                      ) : (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="pixelDisabled"
+                              className="px-2 font-game cursor-not-allowed"
+                            >
+                              🔒 xp
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Complete previous exercise</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        ))}
+      </div>
     </div>
   )
 }

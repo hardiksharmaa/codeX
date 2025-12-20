@@ -15,6 +15,7 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { UserButton, useUser } from '@clerk/nextjs'
+import { useParams, usePathname } from 'next/navigation';
 
 const courses = [
   {
@@ -79,13 +80,15 @@ const courses = [
 
 export function Header() {
   const { user, isLoaded, isSignedIn } = useUser();
+  const path=usePathname();
+  const {exerciseslug}=useParams();
   return (
     <div className='p-4 max-w-7xl flex justify-between items-center w-full'>
       <Link href='/' className='flex gap-2 items-center cursor-pointer hover:opacity-90 transition'>
         <Image src={'/logo.png'} alt='logo' width={40} height={40}/>
       <h2 className='font-game font-bold text-4xl'>codeX</h2>
       </Link>  
-        <NavigationMenu>
+      {!exerciseslug ? <NavigationMenu>
       <NavigationMenuList className='gap-8'>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Courses</NavigationMenuTrigger>
@@ -135,7 +138,9 @@ export function Header() {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu>:
+      <h2 className="font-game text-3xl">{exerciseslug?.toString().replaceAll('-',' ').toLocaleUpperCase()}</h2>
+      }
       {!isLoaded ? null : !isSignedIn ? (
         <Link href="/sign-in">
           <Button className="font-game text-2xl cursor-pointer" variant="pixel">

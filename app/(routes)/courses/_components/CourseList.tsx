@@ -39,7 +39,7 @@ type Chapter={
   exercises: exercise[];
 }
 
-type exercise={
+export type exercise={
   name: string;
   slug:string;
   xp:number;

@@ -71,8 +71,9 @@ export async function GET(req: NextRequest) {
             eq(CompletedExerciseTable.courseId, courseId),
             eq(CompletedExerciseTable.userId, user.id)
           )
-        ).orderBy(desc(CompletedExerciseTable?.courseId),
-          desc(CompletedExerciseTable?.exerciseId)
+        ).orderBy(
+          asc(CompletedExerciseTable.chapterId),
+          asc(CompletedExerciseTable.exerciseId)
         )
       }
     return NextResponse.json({
