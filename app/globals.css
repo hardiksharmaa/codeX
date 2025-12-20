@@ -125,3 +125,128 @@
     @apply bg-background text-foreground;
   }
 }
+/* =========================
+   ContentSection Enhancements
+   ========================= */
+
+/* Prose base improvements */
+.prose {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #e5e7eb; /* zinc-200 */
+}
+
+/* Paragraph spacing */
+.prose p {
+  margin-bottom: 0.9rem;
+}
+
+/* Headings inside content */
+.prose h1,
+.prose h2,
+.prose h3 {
+  color: #f9fafb;
+  font-weight: 700;
+  margin-top: 1.8rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Inline code */
+.prose code {
+  background-color: rgba(255, 255, 255, 0.06);
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.4rem;
+  font-size: 0.9em;
+  color: #facc15; /* yellow-400 */
+}
+
+/* Code blocks */
+.prose pre {
+  background: linear-gradient(180deg, #09090b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.9rem;
+  padding: 1rem 1.25rem;
+  margin: 1.2rem 0;
+  overflow-x: auto;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+/* Lists */
+.prose ul {
+  padding-left: 1.4rem;
+  margin-top: 0.6rem;
+}
+
+.prose li {
+  margin-bottom: 0.4rem;
+}
+
+/* =========================
+   Section Card Styling
+   ========================= */
+
+/* Content block */
+.prose {
+  background: linear-gradient(
+    180deg,
+    rgba(24, 24, 27, 0.85),
+    rgba(9, 9, 11, 0.85)
+  );
+  padding: 1.4rem 1.6rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+/* Task section */
+.prose + div .prose {
+  background: linear-gradient(
+    180deg,
+    rgba(24, 24, 27, 0.9),
+    rgba(15, 23, 42, 0.9)
+  );
+}
+
+/* Hint section */
+.text-yellow-500 + .prose {
+  background: linear-gradient(
+    180deg,
+    rgba(113, 63, 18, 0.2),
+    rgba(24, 24, 27, 0.9)
+  );
+  border-color: rgba(250, 204, 21, 0.35);
+}
+
+/* =========================
+   Smooth Reading Feel
+   ========================= */
+
+.prose {
+  animation: fadeUp 0.4s ease-out;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Prevent horizontal overflow everywhere */
+.prose * {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
