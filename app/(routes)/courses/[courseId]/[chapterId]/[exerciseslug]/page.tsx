@@ -10,7 +10,8 @@ import {
 } from "react-resizable-panels";
 import { exercise } from "../../../_components/CourseList";
 import ContentSection from "./_components/ContentSection";
-
+import CodeEditor from "./_components/CodeEditor";
+import { Button } from "@/components/ui/button";
 export type CourseExercise = {
   chapterId: number;
   courseId: number;
@@ -39,8 +40,6 @@ export default function Playground() {
   const { courseId, chapterId, exerciseslug } = useParams();
   const [loading, setLoading] = useState(false);
   const [courseExerciseData, setCourseExerciseData] = useState<any>();
-
-  /* 🔒 Lock body scroll ONLY for this page */
   useEffect(() => {
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -51,7 +50,7 @@ export default function Playground() {
 
   useEffect(() => {
     getExerciseCourseDetail();
-  }, []);
+  }, [courseId, chapterId, exerciseslug]);
 
   const getExerciseCourseDetail = async () => {
     setLoading(true);
@@ -77,15 +76,18 @@ export default function Playground() {
           </div>
         </Panel>
 
-        <PanelResizeHandle className="w-1 bg-zinc-800 hover:bg-blue-500" />
+        <PanelResizeHandle className="w-1 bg-zinc-800 hover:bg-yellow-500" />
 
         <Panel defaultSize={60} minSize={30}>
           <div className="h-full min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth">
-            Code Editor
+            <CodeEditor 
+            courseExerciseData={courseExerciseData}
+            loading={loading}/>
           </div>
         </Panel>
 
       </PanelGroup>
+
     </div>
   );
 }

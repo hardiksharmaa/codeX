@@ -119,7 +119,7 @@ function CourseChapters({ loading, courseDetail }: props) {
                     >
                       <div className='flex items-center gap-10'>
                         <h2 className='text-2xl font-game text-yellow-500'>
-                          Excercise {index * chapter.exercises.length + indexExc + 1}
+                          Exercise {index * chapter.exercises.length + indexExc + 1}
                         </h2>
 
                         {(EnableExercise(index, indexExc) ||
