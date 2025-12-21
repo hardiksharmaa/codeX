@@ -10,12 +10,12 @@ type Props={
 
 function ContentSection({courseExerciseData, loading}:Props) {
   return (
-    <div className='p-4 pt-4 w-full max-w-full overflow-x-hidden wrap-break-word'>
+    <div className='p-4 pt-2 w-full max-w-full overflow-x-hidden wrap-break-word'>
       {loading || courseExerciseData==undefined ?
         <Skeleton className='h-full w-full m-10 rounded-2xl'/>
         :
         <div>
-          <h2 className='font-game text-3xl px-5'>{courseExerciseData?.exerciseResult.exerciseName}</h2>
+          <h2 className='font-game text-2xl px-5 text-yellow-500'>{courseExerciseData?.exerciseResult.exerciseName}</h2>
           <div className="prose prose-invert max-w-none 
              wrap-break-word 
              [&_pre]:overflow-x-auto 
