@@ -19,7 +19,7 @@ export type Course = {
   completedExercises?:CompletedExercises[];
 };
 
-type CompletedExercises={
+export type CompletedExercises={
   chapterId:number,
   courseId:number,
   exerciseId: number,
