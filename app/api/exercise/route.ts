@@ -1,4 +1,4 @@
-import { CourseChaptersTable, ExerciseTable } from "@/config/schema";
+import { CompletedExerciseTable, CourseChaptersTable, ExerciseTable } from "@/config/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/config/db";
 import { and, eq } from "drizzle-orm";
@@ -43,9 +43,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const completedExercise=await db.select().from(CompletedExerciseTable).where(and(eq(CompletedExerciseTable?.courseId,courseId),eq(CompletedExerciseTable?.chapterId,chapterId)))
+
     return NextResponse.json({
       ...courseResult[0],
       exerciseResult: exerciseResult[0],
+      completedExercise:completedExercise
     });
 
   } catch (error) {

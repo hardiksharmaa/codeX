@@ -8,7 +8,7 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "react-resizable-panels";
-import { exercise } from "../../../_components/CourseList";
+import { CompletedExercises, exercise } from "../../../_components/CourseList";
 import ContentSection from "./_components/ContentSection";
 import CodeEditor from "./_components/CodeEditor";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ export type CourseExercise = {
   desc: string;
   name: string;
   exerciseResult: exerciseData; 
+  completedExercise:CompletedExercises[];
 };
 
 export type exerciseData = {
