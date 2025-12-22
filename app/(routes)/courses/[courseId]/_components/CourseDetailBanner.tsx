@@ -34,6 +34,53 @@ function CourseDetailBanner({ loading, courseDetail, refreshData }: props) {
       setLoading_(false)
     }
   }
+  const getContinueLearningPath = (courseDetail: any) => {
+  if (!courseDetail?.chapters) return null
+
+  const chapters = courseDetail.chapters
+  const completed = courseDetail.completedExercises ?? []
+
+  const flattenIndex = (chapterIdx: number, exerciseIdx: number) => {
+    let count = 0
+    for (let i = 0; i < chapterIdx; i++) {
+      count += chapters[i].exercises.length
+    }
+    return count + exerciseIdx
+  }
+
+  const completedIndexes = completed
+    .map((c: any) => {
+      const chIdx = chapters.findIndex(
+        (ch: any) => ch.chapterId === c.chapterId
+      )
+      if (chIdx === -1) return -1
+
+      const exIdx = chapters[chIdx].exercises.findIndex(
+        (ex: any) => ex.slug === c.exerciseId
+      )
+      if (exIdx === -1) return -1
+
+      return flattenIndex(chIdx, exIdx)
+    })
+    .filter((i: number) => i >= 0)
+
+    const lastCompletedIndex =
+      completedIndexes.length === 0 ? -1 : Math.max(...completedIndexes)
+
+    let counter = 0
+
+    for (let chIdx = 0; chIdx < chapters.length; chIdx++) {
+      for (let exIdx = 0; exIdx < chapters[chIdx].exercises.length; exIdx++) {
+        if (counter === lastCompletedIndex + 1) {
+          const ex = chapters[chIdx].exercises[exIdx]
+          return `/courses/${courseDetail.courseId}/${chapters[chIdx].chapterId}/${ex.slug}`
+        }
+        counter++
+      }
+    }
+
+    return null
+  }
 
   return (
     <div>
@@ -73,8 +120,17 @@ function CourseDetailBanner({ loading, courseDetail, refreshData }: props) {
               Enroll Now
             </Button>
             : 
-            <Button className="font-game text-2xl mt-6 w-fit px-2 cursor-pointer" variant="pixel"
-              size="lg">Continue Learning...</Button>
+            <Button
+            className="font-game text-2xl mt-6 w-fit px-2 cursor-pointer"
+            variant="pixel"
+            size="lg"
+            onClick={() => {
+              const path = getContinueLearningPath(courseDetail)
+              if (path) window.location.href = path
+            }}
+          >
+            Continue Learning...
+          </Button>
             }
           </div>
             

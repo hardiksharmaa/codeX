@@ -124,7 +124,7 @@ export function Header() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href={'/projects'}>Projects</Link>
+            <Link href={'/'}>Projects</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
