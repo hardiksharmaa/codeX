@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import Link from 'next/link'
+import { useAuth } from '@clerk/nextjs'
 
 type Props = {
   loading: boolean
@@ -21,6 +22,9 @@ type Props = {
 }
 
 function CourseChapters({ loading, courseDetail }: Props) {
+  const {has}= useAuth();
+  const hasUnlimitedAccess = has&&has({ plan: 'unlimited' })
+
   if (loading || !courseDetail || !courseDetail.chapters) {
     return (
       <div className="p-5 border-4 rounded-2xl space-y-4">
@@ -33,7 +37,6 @@ function CourseChapters({ loading, courseDetail }: Props) {
 
   const chapters = courseDetail.chapters
   const completed = courseDetail.completedExercises ?? []
-
 
   const flattenIndex = (chapterIdx: number, exerciseIdx: number) => {
     let count = 0
@@ -76,9 +79,14 @@ function CourseChapters({ loading, courseDetail }: Props) {
         <Accordion key={chapter.chapterId} type="single" collapsible>
           <AccordionItem value={`ch-${chapter.chapterId}`}>
             <AccordionTrigger className="p-3 hover:bg-zinc-800 font-game text-3xl">
-              <div className="flex gap-8">
-                <h2>{chIdx + 1}</h2>
-                <h2>{chapter.name}</h2>
+              <div className='flex items-center justify-between w-full'>
+                <div className="flex gap-8">
+                  <h2>{chIdx + 1}</h2>
+                  <h2>{chapter.name}</h2>
+                </div>
+                {!hasUnlimitedAccess && chIdx>=2 &&
+                <h2 className='font-game text-2xl text-yellow-500'>Pro</h2>
+                }
               </div>
             </AccordionTrigger>
 
@@ -112,36 +120,51 @@ function CourseChapters({ loading, courseDetail }: Props) {
                           </h2>
                         )}
                       </div>
-
                       {done ? (
-                        <Button
-                          variant="pixel"
-                          className="px-2 font-game text-xl bg-green-600 cursor-default"
-                        >
-                          Done
-                        </Button>
-                      ) : enabled ? (
-                        <Button
-                          variant="destructive"
-                          className="px-2 font-game text-xl"
-                        >
-                          {ex.xp} xp
-                        </Button>
-                      ) : (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="pixelDisabled"
-                              className="px-2 font-game cursor-not-allowed"
-                            >
-                              🔒 xp
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Complete previous exercise</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
+  <Button
+    variant="pixel"
+    className="px-2 font-game text-xl bg-green-600 cursor-default"
+  >
+    Done
+  </Button>
+) : enabled ? (
+  <Button
+    variant="destructive"
+    className="px-2 font-game text-xl"
+  >
+    {ex.xp} xp
+  </Button>
+) : (
+  !hasUnlimitedAccess && chIdx >= 2 ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="pixel"
+          className="px-2 font-game text-xl bg-yellow-500 text-black cursor-pointer"
+        >
+          PRO
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Subscribe to unlock</p>
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="pixelDisabled"
+          className="px-2 font-game cursor-not-allowed"
+        >
+          🔒 xp
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Complete previous exercise</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+)}
                     </div>
                   )
                 })}
