@@ -5,7 +5,7 @@ import ExploreMore from './_components/ExploreMore'
 import InviteFriend from './_components/InviteFriend'
 import UserStatus from './_components/UserStatus'
 import UpgradeToPro from './_components/UpgradeToPro'
-import ExploreMoreCourses from './_components/ExploreMoreCourses'
+import ExploreMoreCourses from './_components/ExploreMore'
 
 function Dashboard() {
   return (
