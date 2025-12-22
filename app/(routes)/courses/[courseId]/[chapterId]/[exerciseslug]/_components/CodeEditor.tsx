@@ -75,6 +75,9 @@ function CodeEditor({ courseExerciseData }: Props) {
   const courseId = Number(params.courseId);
   const chapterId = Number(params.chapterId);
   const exerciseslug = String(params.exerciseslug);
+  if (isNaN(courseId) || isNaN(chapterId)) {
+    return null;
+    }
 
   const [progress, setProgress] = useState<Progress | null>(null);
   const [completing, setCompleting] = useState(false);
@@ -154,7 +157,8 @@ function CodeEditor({ courseExerciseData }: Props) {
       style={{ height: 'calc(100vh - 48px)' }}
     >
       <SandpackProvider
-        template="static"
+        //@ts-ignore
+        template={courseExerciseData?.editorType??'react'}
         theme={nightOwl}
         files={courseExerciseData?.exerciseResult?.exercisesContent?.starterCode}
         options={{ autoReload: false, autorun: false }}

@@ -6,7 +6,13 @@ import {
   EnrolledCoursesTable,
 } from "@/config/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq, asc, and, desc } from "drizzle-orm";
+import {
+  eq,
+  asc,
+  and,
+  desc,
+  inArray,
+} from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -20,6 +26,83 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(courses);
     }
 
+    if (courseIdParam === "enrolled") {
+      if (!user) {
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const userId = user.id;
+
+      const enrolledCourses = await db
+        .select()
+        .from(EnrolledCoursesTable)
+        .where(eq(EnrolledCoursesTable.userId, userId));
+
+      if (enrolledCourses.length === 0) {
+        return NextResponse.json([]);
+      }
+
+      const courseIds = enrolledCourses.map(c => c.courseId);
+
+      const courses = await db
+        .select()
+        .from(CourseTable)
+        .where(inArray(CourseTable.courseId, courseIds));
+
+      const chapters = await db
+        .select()
+        .from(CourseChaptersTable)
+        .where(inArray(CourseChaptersTable.courseId, courseIds))
+        .orderBy(asc(CourseChaptersTable.chapterId));
+
+      const completed = await db
+        .select()
+        .from(CompletedExerciseTable)
+        .where(
+          and(
+            inArray(CompletedExerciseTable.courseId, courseIds),
+            eq(CompletedExerciseTable.userId, userId)
+          )
+        );
+
+      const formattedResult = courses.map(course => {
+        const courseEnrollInfo = enrolledCourses.find(
+          e => e.courseId === course.courseId
+        );
+
+        const courseChapters = chapters.filter(
+          ch => ch.courseId === course.courseId
+        );
+
+        const totalExercises = courseChapters.reduce((acc, chapter) => {
+          const count = Array.isArray(chapter.exercises)
+            ? chapter.exercises.length
+            : 0;
+          return acc + count;
+        }, 0);
+
+        const completedExercises = completed.filter(
+          cx => cx.courseId === course.courseId
+        ).length;
+
+        return {
+          courseId: course.courseId,
+          title: course.title,
+          bannerImage: course.bannerImage,
+          totalExercises,
+          completedExercises,
+          xpEarned: courseEnrollInfo?.xpEarned ?? 0,
+          level: course.level,
+          userEnrolled: true,
+        };
+      });
+
+      return NextResponse.json(formattedResult);
+    }
+    
     const courseId = Number(courseIdParam);
     if (Number.isNaN(courseId)) {
       return NextResponse.json(
@@ -71,19 +154,20 @@ export async function GET(req: NextRequest) {
             eq(CompletedExerciseTable.courseId, courseId),
             eq(CompletedExerciseTable.userId, user.id)
           )
-        ).orderBy(
+        )
+        .orderBy(
           asc(CompletedExerciseTable.chapterId),
           asc(CompletedExerciseTable.exerciseId)
-        )
-      }
+        );
+    }
+
     return NextResponse.json({
       ...result[0],
       chapters: chapterResult,
       userEnrolled: isEnrolledCourse,
       courseEnrolledInfo: enrolledCourse[0] ?? null,
-      completedExercises: completedExercises,
+      completedExercises,
     });
-
   } catch (error) {
     console.error("Failed to fetch courses:", error);
     return NextResponse.json(

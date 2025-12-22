@@ -17,6 +17,7 @@ export type CourseExercise = {
   courseId: number;
   desc: string;
   name: string;
+  editorType:string;
   exerciseResult: exerciseData; 
   completedExercise:CompletedExercises[];
 };

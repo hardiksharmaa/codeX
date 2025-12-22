@@ -17,7 +17,8 @@ export const CourseTable=pgTable("courses",{
   desc:varchar({length:255}).notNull(),
   bannerImage:varchar({length:255}).notNull(),
   level:varchar({length:255}).default("Beginner").notNull(),
-  tags:varchar({length:255})
+  tags:varchar({length:255}),
+  editorType:varchar({length:255}),
 })
 
 export const CourseChaptersTable = pgTable(

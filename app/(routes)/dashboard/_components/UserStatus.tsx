@@ -1,10 +1,11 @@
 "use client"
-import React, { use } from 'react'
+import React, { use, useContext } from 'react'
 import Image from 'next/image'
 import { useUser } from '@clerk/nextjs'
+import { UserDetailContext } from '@/context/UserDetailContext';
 function UserStatus() {
     const {user}=useUser();
-
+    const {userDetail,setUserDetail}=useContext(UserDetailContext);
   return (
     <div className='p-5 border-4 rounded-2xl'>
         <div className='flex gap-2 items-center'>
@@ -15,7 +16,7 @@ function UserStatus() {
             <div className='flex gap-2 items-center'>
                 <Image src={'/star.png'} alt='star' width={25} height={25}/>
                 <div>
-                    <h2 className='font-game text-2xl'>20</h2>
+                    <h2 className='font-game text-2xl'>{userDetail?.points}</h2>
                     <h2 className='font-game text-zinc-400 text-xl'>Total Rewards</h2>
                 </div>
             </div>
@@ -29,14 +30,15 @@ function UserStatus() {
             <div className='flex gap-2 items-center'>
                 <Image src={'/fire.png'} alt='fire' width={30} height={30}/>
                 <div>
-                    <h2 className='font-game text-2xl'>7</h2>
+                    <h2 className='font-game text-2xl'>2</h2>
                     <h2 className='font-game text-zinc-400 text-xl'>Streak</h2>
                 </div>
             </div>
             <div className='flex gap-2 items-center'>
-                <Image src={'/star.png'} alt='star' width={20} height={20}/>
+                <Image src={'/star.png'} alt='star' width={25} height={25}/>
                 <div>
-                    <h2 className='font-game text-2xl'>20</h2>
+                    <h2 className='font-game text-2xl'>{
+                userDetail?.points}</h2>
                     <h2 className='font-game text-zinc-400 text-xl'>Total Rewards</h2>
                 </div>
             </div>
