@@ -10,11 +10,13 @@ type Props = {
 
 function CourseProgressCard({ course }: Props) {
   const progressPercent =
-    (course.completedExercises / course.totalExercises) * 100
+  course.totalExercises > 0
+  ? (course.completedExercises / course.totalExercises) * 100
+  : 0
 
   return (
     <Link href={'/courses/'+course?.courseId}>
-    <div className="group rounded-2xl overflow-hidden border border-zinc-800 bg-linear-to-b from-zinc-900 to-zinc-950 hover:border-yellow-500/40 transition-all duration-300 mb-4 border-3">
+    <div className="group rounded-2xl overflow-hidden border-zinc-800 bg-linear-to-b from-zinc-900 to-zinc-950 hover:border-yellow-500/40 transition-all duration-300 mb-4 border-2">
       
       <div className="relative">
         <Image

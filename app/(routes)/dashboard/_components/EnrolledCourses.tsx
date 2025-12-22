@@ -28,15 +28,20 @@ function EnrolledCourses() {
 
     const GetUserEnrolledCourses=async()=>{
         setLoading(true);
-        const result=await axios.get('/api/course?courseId=enrolled');
-        setEnrolledCourses(result.data);
-        console.log(result.data);
-        setLoading(false);
+        try {
+            const result=await axios.get('/api/course?courseId=enrolled');
+            setEnrolledCourses(result.data);
+        } catch (error) {
+            console.error('Failed to fetch enrolled courses:', error);
+            setEnrolledCourses([]);
+        } finally {
+            setLoading(false);
+        }
     }
   return (
     <div className='mt-2'>
         <h2 className='font-game text-3xl mb-1'>Your Enrolled Courses</h2>
-        {loading && <Skeleton className='w-full rounded-2xl my-5'/>}
+        {loading && <Skeleton className='w-full h-48 rounded-2xl my-5'/>}
         {
             enrolledCourses?.length==0?
             <div className='flex flex-col items-center gap-3 p-7 border rounded-2xl bg-zinc-800'>
