@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { UserButton, useUser } from '@clerk/nextjs'
 import { useParams, usePathname } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const courses = [
   {
@@ -81,13 +82,23 @@ const courses = [
 export function Header() {
   const { user, isLoaded, isSignedIn } = useUser();
   const path=usePathname();
-  const {exerciseslug}=useParams();
+  const {exerciseslug, courseId}=useParams();
   return (
     <div className='p-4 max-w-7xl flex justify-between items-center w-full'>
-      <Link href='/' className='flex gap-2 items-center cursor-pointer hover:opacity-90 transition'>
-        <Image src={'/logo.png'} alt='logo' width={40} height={40}/>
-      <h2 className='font-game font-bold text-4xl'>codeX</h2>
-      </Link>  
+      <div className='flex gap-6 items-center '>
+        {exerciseslug && courseId && (
+          <Link 
+            href={`/courses/${courseId}`} 
+            className='flex items-center cursor-pointer hover:opacity-90 transition border border-zinc-500 rounded-xl p-1'
+          >
+            <ArrowLeft className='w-6 h-6 mx-3 text-yellow-500' />
+          </Link>
+        )}
+        <Link href='/' className='flex gap-2 items-center cursor-pointer hover:opacity-90 transition'>
+          <Image src={'/logo.png'} alt='logo' width={40} height={40}/>
+          <h2 className='font-game font-bold text-4xl'>codeX</h2>
+        </Link>
+      </div>  
       {!exerciseslug ? <NavigationMenu>
       <NavigationMenuList className='gap-8'>
         <NavigationMenuItem>
